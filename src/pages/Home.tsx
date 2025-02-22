@@ -49,12 +49,9 @@ const Home = () => {
                 <motion.p variants={fadeInUp} className="text-xl text-gray-300 mb-8 leading-relaxed">
                   Get high-quality Apollo data at a fraction of the cost. Access millions of verified business contacts and company information without breaking the bank.
                 </motion.p>
-                <motion.div variants={fadeInUp} className="flex space-x-4">
+                <motion.div variants={fadeInUp}>
                   <Link to="/request-leads" className="btn-primary">
                     Request Leads
-                  </Link>
-                  <Link to="/pricing" className="btn-secondary">
-                    Compare Pricing
                   </Link>
                 </motion.div>
               </motion.div>

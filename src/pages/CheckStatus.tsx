@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { ClipboardList, AlertCircle, XCircle, CheckCircle, Loader2, ArrowRight, Clock, Cog, Link as LinkIcon, Mail, Search } from 'lucide-react';
+import { ClipboardList, AlertCircle, XCircle, CheckCircle, Loader2, ArrowRight, Clock, Cog, Link as LinkIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageTransition from '../components/PageTransition';
 
@@ -37,11 +37,8 @@ const statusConfig: Record<RequestStatus, { color: string; icon: React.ReactNode
 
 const CheckStatus = () => {
   const [trackingId, setTrackingId] = useState('');
-  const [email, setEmail] = useState('');
   const [isCheckingStatus, setIsCheckingStatus] = useState(false);
-  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
   const [trackingRequest, setTrackingRequest] = useState<RequestDetails | null>(null);
-  const [emailRequests, setEmailRequests] = useState<RequestDetails[]>([]);
   const [notification, setNotification] = useState<{
     type: 'success' | 'error';
     message: string;
@@ -92,45 +89,6 @@ const CheckStatus = () => {
       setIsCheckingStatus(false);
     }
   }, [trackingId, isCheckingStatus, showNotification]);
-
-  const handleEmailCheck = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.trim()) {
-      showNotification('error', 'Please enter an email address');
-      return;
-    }
-
-    if (isCheckingEmail) return; // Prevent multiple simultaneous requests
-
-    setIsCheckingEmail(true);
-    try {
-      const response = await fetch('https://automate.chillreach.online/webhook/check-email-requests', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: email.trim() }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch requests');
-      }
-
-      const data = await response.json();
-      setEmailRequests(data.requests || []);
-      
-      if (data.requests?.length > 0) {
-        showNotification('success', 'Request history retrieved successfully');
-      } else {
-        showNotification('error', 'No requests found for this email');
-      }
-    } catch (error) {
-      console.error('Error checking email requests:', error);
-      showNotification('error', 'Failed to fetch request history');
-    } finally {
-      setIsCheckingEmail(false);
-    }
-  }, [email, isCheckingEmail, showNotification]);
 
   const getStatusColor = useCallback((status: RequestStatus) => {
     const config = statusConfig[status];
@@ -223,12 +181,11 @@ const CheckStatus = () => {
               <span className="gradient-text">Status</span>
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Track the progress of your lead requests using tracking ID or email
+              Track the progress of your lead request using your tracking ID
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Tracking ID Form */}
+          <div className="max-w-2xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -281,85 +238,6 @@ const CheckStatus = () => {
                           <>
                             Check Status
                             <ArrowRight className="h-5 w-5" />
-                          </>
-                        )}
-                      </span>
-                    </motion.button>
-                  </div>
-                </div>
-              </form>
-            </motion.div>
-
-            {/* Email Form */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.2 }}
-            >
-              <form onSubmit={handleEmailCheck} className="space-y-8">
-                <div className="bg-black/40 backdrop-blur-lg rounded-[2rem] border border-white/10 p-8 md:p-12">
-                  <h3 className="text-2xl font-bold mb-6">Check by Email</h3>
-                  <div className="space-y-6">
-                    <div>
-                      <label htmlFor="email" className="block text-lg font-medium text-white mb-3">
-                        Email Address
-                      </label>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                          <Mail className="h-5 w-5 text-[#cc73f8]" />
-                        </div>
-                        <input
-                          type="email"
-                          id="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder="Enter your email address"
-                          className="form-input pl-11"
-                          required
-                        />
-                      </div>
-                      <p className="mt-2 text-sm text-gray-400 flex items-center">
-                        <AlertCircle className="h-4 w-4 mr-1" />
-                        We'll show all requests associated with this email
-                      </p>
-                    </div>
-
-                    {emailRequests.length > 0 && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="space-y-4"
-                      >
-                        {emailRequests.map((request, index) => (
-                          <motion.div
-                            key={request.trackingId}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.1 }}
-                          >
-                            <RequestDetailsCard request={request} />
-                          </motion.div>
-                        ))}
-                      </motion.div>
-                    )}
-
-                    <motion.button
-                      type="submit"
-                      className="btn-primary w-full"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      disabled={isCheckingEmail}
-                    >
-                      <span className="flex items-center justify-center gap-2">
-                        {isCheckingEmail ? (
-                          <>
-                            <Loader2 className="h-5 w-5 animate-spin" />
-                            Fetching Requests...
-                          </>
-                        ) : (
-                          <>
-                            Find Requests
-                            <Search className="h-5 w-5" />
                           </>
                         )}
                       </span>
