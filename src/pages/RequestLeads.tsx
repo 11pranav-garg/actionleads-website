@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { LinkIcon, Users, Mail, ArrowRight, AlertCircle, XCircle, ClipboardList, CreditCard, Clock, FileSpreadsheet, Search, ListIcon, DivideIcon as LucideIcon, Info, Key, HelpCircle, CheckCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -26,18 +26,14 @@ interface FormData {
   credId?: string;
 }
 
-// Obfuscated endpoint handler
 const processRequest = async (data: any) => {
-  // This function is obfuscated to prevent easy inspection
   const endpoints = {
     search: atob("aHR0cHM6Ly9hdXRvbWF0ZS5jaGlsbHJlYWNoLm9ubGluZS93ZWJob29rL2Fwb2xsby1yZXF1ZXN0"),
     lists: atob("aHR0cHM6Ly9hdXRvbWF0ZS5jaGlsbHJlYWNoLm9ubGluZS93ZWJob29rL2Fwb2xsby1yZXF1ZXN0LWxpc3Q=")
   };
   
-  // Add a random parameter to prevent caching
   const endpoint = `${endpoints[data.type]}?_=${Date.now()}`;
   
-  // Remove the type property before sending
   const { type, ...requestData } = data;
   
   try {
@@ -45,7 +41,6 @@ const processRequest = async (data: any) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // Add a custom header to make it harder to identify
         'X-Client-ID': btoa(navigator.userAgent),
       },
       body: JSON.stringify(requestData),
@@ -57,10 +52,10 @@ const processRequest = async (data: any) => {
 };
 
 const RequestLeads = () => {
-  // Always set to 'search' and don't allow changing
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabType>('search');
   const [formData, setFormData] = useState<FormData>({
-    apolloUrl: 'https://app.apollo.io/#/people?page=1&contactEmailStatus[]=verified',
+    apolloUrl: '',
     numberOfLeads: 1,
     email: '',
     credId: '',
@@ -68,7 +63,7 @@ const RequestLeads = () => {
   const [urlError, setUrlError] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [credIdError, setCredIdError] = useState<string | null>(null);
-  const [isValidUrl, setIsValidUrl] = useState(true);
+  const [isValidUrl, setIsValidUrl] = useState(false);
   const [isValidEmail, setIsValidEmail] = useState(false);
   const [isValidCredId, setIsValidCredId] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
@@ -105,7 +100,6 @@ const RequestLeads = () => {
         },
       ]
     },
-    // Lists tab is still defined but not used in the UI
     lists: {
       title: 'Get Leads from Lists',
       description: 'Extract leads from your saved Apollo.io lists quickly and efficiently.',
@@ -201,7 +195,6 @@ const RequestLeads = () => {
             if (hasContactLabelIds || hasProspectedParam) {
               setShowPopup(true);
               setTimeout(() => {
-                // No longer changing tab to lists
                 setShowPopup(false);
               }, 3000);
               return;
@@ -238,6 +231,9 @@ const RequestLeads = () => {
         setUrlError('Please enter a valid Apollo URL');
         setIsValidUrl(false);
       }
+    } else {
+      setUrlError(null);
+      setIsValidUrl(false);
     }
   }, [activeTab, formData.apolloUrl]);
 
@@ -287,7 +283,6 @@ const RequestLeads = () => {
     }
   }, [formData.credId, activeTab]);
 
-  // Completely rewritten to be more secure
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -308,41 +303,39 @@ const RequestLeads = () => {
       setIsSubmitting(true);
       
       try {
-        // Show processing message
         showNotification('success', 'Processing your request...');
         
-        // Add a random delay to make it harder to identify patterns
         await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000));
         
-        // Create a request object with the necessary data
         const requestData = {
           type: activeTab,
           apolloUrl: formData.apolloUrl,
           numberOfLeads: formData.numberOfLeads * 1000,
           email: formData.email,
           ...(activeTab === 'lists' && { credId: formData.credId }),
-          // Add a timestamp to make each request unique
           timestamp: Date.now(),
         };
 
-        // Process the request through our obfuscated handler
         const response = await processRequest(requestData);
 
         if (!response.ok) {
           throw new Error('Failed to submit request');
         }
 
-        // Reset form after successful submission
+        navigate('/thank-you', {
+          state: {
+            apolloUrl: formData.apolloUrl,
+            numberOfLeads: formData.numberOfLeads,
+            email: formData.email,
+          }
+        });
+
         setFormData({
-          apolloUrl: activeTab === 'search' 
-            ? 'https://app.apollo.io/#/people?page=1&contactEmailStatus[]=verified'
-            : '',
+          apolloUrl: '',
           numberOfLeads: 1,
           email: '',
           credId: '',
         });
-
-        showNotification('success', 'Request sent successfully! Please check your email.');
       } catch (error) {
         console.error('Error submitting form');
         showNotification('error', 'Failed to submit request. Please try again later.');
@@ -375,15 +368,12 @@ const RequestLeads = () => {
     }
   };
 
-  // This function is kept but not used in the UI
   const handleTabChange = (tab: TabType) => {
     if (tab === activeTab) return;
     
     setActiveTab(tab);
     setFormData({
-      apolloUrl: tab === 'search' 
-        ? 'https://app.apollo.io/#/people?page=1&contactEmailStatus[]=verified'
-        : '',
+      apolloUrl: '',
       numberOfLeads: 1,
       email: '',
       credId: '',
@@ -427,8 +417,6 @@ const RequestLeads = () => {
             Get started with Apollo.io lead extraction
           </p>
         </div>
-
-        {/* Tab selector removed - only showing search option */}
 
         <motion.div
           key={activeTab}
@@ -502,7 +490,7 @@ const RequestLeads = () => {
                   <div className="space-y-6">
                     <div>
                       <label htmlFor="apolloUrl" className="block text-lg font-medium text-white mb-3">
-                        Apollo Search URL
+                        Apollo Search URL <span className="text-[#cc73f8]">*</span>
                       </label>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">

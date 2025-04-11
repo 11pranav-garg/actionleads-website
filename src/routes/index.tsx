@@ -10,6 +10,7 @@ import PrivacyPolicy from '../pages/PrivacyPolicy';
 import TermsOfService from '../pages/TermsOfService';
 import CookiePolicy from '../pages/CookiePolicy';
 import PaymentSuccess from '../pages/PaymentSuccess';
+import ThankYou from '../pages/ThankYou';
 
 // Page titles mapping
 const pageTitles: { [key: string]: string } = {
@@ -22,6 +23,7 @@ const pageTitles: { [key: string]: string } = {
   '/terms': 'Terms of Service - ActionLeads',
   '/cookies': 'Cookie Policy - ActionLeads',
   '/payment-success': 'Payment Successful - ActionLeads',
+  '/thank-you': 'Thank You - ActionLeads',
 };
 
 const AppRoutes = () => {
@@ -44,6 +46,7 @@ const AppRoutes = () => {
       <Route path="/terms" element={<TermsOfService />} />
       <Route path="/cookies" element={<CookiePolicy />} />
       <Route path="/payment-success" element={<PaymentSuccess />} />
+      <Route path="/thank-you" element={<ThankYou />} />
     </Routes>
   );
 };
