@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail } from 'lucide-react';
+import { Mail, Phone } from 'lucide-react';
 import PageTransition from '../components/PageTransition';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -85,8 +85,9 @@ const Contact = () => {
               >
                 <h3 className="text-2xl font-semibold mb-6 text-white">Contact Information</h3>
                 <div className="space-y-6">
-                  <motion.div 
-                    className="flex items-center space-x-4 group"
+                  <motion.a 
+                    href="mailto:support@actionleads.io"
+                    className="flex items-center space-x-4 group cursor-pointer"
                     whileHover={{ x: 5 }}
                     transition={{ duration: 0.2 }}
                   >
@@ -97,7 +98,39 @@ const Contact = () => {
                       <p className="text-sm text-gray-400">Email</p>
                       <p className="text-white group-hover:text-[#cc73f8] transition-colors">support@actionleads.io</p>
                     </div>
-                  </motion.div>
+                  </motion.a>
+
+                  <div className="space-y-3">
+                    <motion.a 
+                      href="tel:+919267951769"
+                      className="flex items-center space-x-4 group cursor-pointer"
+                      whileHover={{ x: 5 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <div className="p-3 rounded-lg bg-[#cc73f8]/10 group-hover:bg-[#cc73f8]/20 transition-all duration-300">
+                        <Phone className="h-6 w-6 text-[#cc73f8]" />
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-400">Phone</p>
+                        <p className="text-white group-hover:text-[#cc73f8] transition-colors">+91 92679 51769</p>
+                      </div>
+                    </motion.a>
+
+                    <motion.a 
+                      href="tel:+919392274091"
+                      className="flex items-center space-x-4 group cursor-pointer"
+                      whileHover={{ x: 5 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <div className="p-3 rounded-lg bg-[#cc73f8]/10 group-hover:bg-[#cc73f8]/20 transition-all duration-300">
+                        <Phone className="h-6 w-6 text-[#cc73f8]" />
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-400">Phone</p>
+                        <p className="text-white group-hover:text-[#cc73f8] transition-colors">+91 93922 74091</p>
+                      </div>
+                    </motion.a>
+                  </div>
                 </div>
               </motion.div>
 
