@@ -28,6 +28,12 @@ const Footer = () => {
             <Link to="/cookies" className="text-gray-400 hover:text-[#cc73f8] transition-colors">
               Cookie Policy
             </Link>
+            <Link to="/cancellation" className="text-gray-400 hover:text-[#cc73f8] transition-colors">
+              Cancellation Policy
+            </Link>
+            <Link to="/refund" className="text-gray-400 hover:text-[#cc73f8] transition-colors">
+              Refund Policy
+            </Link>
           </div>
 
           <div className="text-sm text-gray-400">
