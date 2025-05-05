@@ -78,9 +78,22 @@ const RequestLeads = () => {
 
   return (
     <div className="w-full pt-24 pb-32">
-      {/* ... (keep existing JSX until the end) ... */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* ... (keep existing JSX until the Apollo URL input) ... */}
+        <input
+          type="url"
+          id="apolloUrl"
+          name="apolloUrl"
+          value={formData.apolloUrl}
+          onChange={handleChange}
+          placeholder="https://app.apollo.io/#/people?page=1&contactEmailStatus[]=verified"
+          className={`form-input pl-11 ${urlError ? 'border-red-500 focus:ring-red-500' : ''}`}
+          required
+          style={{ minWidth: '100%', maxWidth: '100%' }}
+        />
+        {/* ... (keep the rest of the existing JSX) ... */}
+      </div>
 
-      {/* Add notification popup */}
       <AnimatePresence>
         {notification && (
           <motion.div
